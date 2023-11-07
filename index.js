@@ -28,7 +28,10 @@ async function run() {
     await client.connect();
 
     const foodCollection = client.db('foodCharity').collection('allfood')
+    const requestCollection = client.db('foodCharity').collection('requestfood')
 
+
+    // food collection
     app.post('/allfood', async(req, res)=>{
         const newProduct = req.body;
         console.log(newProduct);
@@ -49,6 +52,16 @@ async function run() {
       const result = await foodCollection.findOne(qurey)
       res.send(result)
   })
+
+  // request collection
+  app.post('/requestFood', async(req, res)=>{
+    const newProduct = req.body;
+    console.log(newProduct);
+    const result = await requestCollection.insertOne(newProduct)
+    res.send(result)
+
+})
+
 
 
     // Send a ping to confirm a successful connection
