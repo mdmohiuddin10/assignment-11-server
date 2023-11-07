@@ -1,6 +1,6 @@
 const express = require('express')
 const cors = require('cors')
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config()
 const app = express()
 const port = process.env.PORT || 5000;
@@ -28,11 +28,27 @@ async function run() {
     await client.connect();
 
     const foodCollection = client.db('foodCharity').collection('allfood')
-    app.get('/allfood', async(req, res)=>{
+
+    app.post('/allfood', async(req, res)=>{
+        const newProduct = req.body;
+        console.log(newProduct);
+        const result = await foodCollection.insertOne(newProduct)
+        res.send(result)
+
+    })
+
+    app.get('/allfoods', async(req, res)=>{
         const curser = foodCollection.find()
         const result = await curser.toArray()
         res.send(result)
     })
+
+    app.get('/allfoods/:id', async(req, res)=>{
+      const id = req.params.id;
+      const qurey = { _id: new ObjectId(id)}
+      const result = await foodCollection.findOne(qurey)
+      res.send(result)
+  })
 
 
     // Send a ping to confirm a successful connection
