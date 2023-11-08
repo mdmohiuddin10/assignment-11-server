@@ -34,7 +34,7 @@ async function run() {
     // food collection
     app.post('/allfood', async (req, res) => {
       const newProduct = req.body;
-      console.log(newProduct);
+      // console.log(newProduct);
       const result = await foodCollection.insertOne(newProduct)
       res.send(result)
 
@@ -53,6 +53,18 @@ async function run() {
       res.send(result)
     })
 
+
+    app.delete('/allfoods/:id', async(req, res)=>{
+      const id = req.params.id;
+      const query = {_id: new ObjectId(id)}
+      const result = await foodCollection.deleteOne(query)
+      res.send(result)
+  })
+
+
+
+
+
     // request collection
     app.post('/requestFood', async (req, res) => {
       const newProduct = req.body;
@@ -68,6 +80,13 @@ async function run() {
         query = { userEmail: req.query.userEmail }
       }
       const result = await requestCollection.find(query).toArray();
+      res.send(result)
+    })
+
+    app.get('/requestFood/:id', async (req, res) => {
+      const id = req.params.id;
+      const qurey = { _id: new ObjectId(id) }
+      const result = await requestCollection.findOne(qurey)
       res.send(result)
     })
 
