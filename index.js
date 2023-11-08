@@ -53,13 +53,39 @@ async function run() {
       res.send(result)
     })
 
-
-    app.delete('/allfoods/:id', async(req, res)=>{
+    app.put('/allfoods/:id', async (req, res) => {
       const id = req.params.id;
-      const query = {_id: new ObjectId(id)}
+      console.log(id);
+      console.log('hello');
+      const filter = { _id: new ObjectId(id)};
+      const options = { upsert: true}
+      const updatedData = req.body;
+      const update = {
+        $set: {
+          foodName: updatedData.foodName,
+          foodQuantity: updatedData.foodQuantity,
+          pickupLocation: updatedData.pickupLocation,
+          date: updatedData.date,
+          additionalNotes: updatedData.additionalNotes,
+          photo: updatedData.photo,
+          foodStatus: updatedData.foodStatus,
+          donatorImage: updatedData.donatorImage,
+          name: updatedData.name,
+          email: updatedData.email
+        }
+      };
+      const result = await foodCollection.updateOne(filter, update, options);
+      res.send(result)   
+    });
+    
+
+
+    app.delete('/allfoods/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) }
       const result = await foodCollection.deleteOne(query)
       res.send(result)
-  })
+    })
 
 
 
@@ -83,19 +109,23 @@ async function run() {
       res.send(result)
     })
 
-    app.get('/requestFood/:id', async (req, res) => {
-      const id = req.params.id;
-      const qurey = { _id: new ObjectId(id) }
+
+
+    app.get('/requestFood/:foodId', async (req, res) => {
+      const foodId = req.params.foodId;
+      console.log(foodId);
+      const qurey = { foodId }
+      console.log(qurey);
       const result = await requestCollection.findOne(qurey)
       res.send(result)
     })
 
-    app.delete('/requestFood/:id', async(req, res)=>{
+    app.delete('/requestFood/:id', async (req, res) => {
       const id = req.params.id;
-      const query = {_id: new ObjectId(id)}
+      const query = { _id: new ObjectId(id) }
       const result = await requestCollection.deleteOne(query)
       res.send(result)
-  })
+    })
 
 
 
