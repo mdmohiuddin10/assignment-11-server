@@ -92,33 +92,39 @@ async function run() {
 
 
     // request collection
+
+
     app.post('/requestFood', async (req, res) => {
       const newProduct = req.body;
-      // console.log(newProduct);
       const result = await requestCollection.insertOne(newProduct)
       res.send(result)
     })
 
+     app.get('/requestFood', async(req, res)=>{
+            console.log(req.query.userEmail);
+            let query = {};
+            if(req.query?.userEmail){
+                query = {userEmail: req.query.userEmail}
+            }
+            const result = await requestCollection.find(query).toArray();
+            res.send(result)
+        })
+
+
     app.get('/requestFood', async (req, res) => {
-      console.log(req.query.userEmail);
-      let query = {};
-      if (req.query?.userEmail) {
-        query = { userEmail: req.query.userEmail }
-      }
-      const result = await requestCollection.find(query).toArray();
+      const curser = requestCollection.find()
+      const result = await curser.toArray()
       res.send(result)
     })
-
-
 
     app.get('/requestFood/:foodId', async (req, res) => {
       const foodId = req.params.foodId;
-      console.log(foodId);
       const qurey = { foodId }
-      console.log(qurey);
       const result = await requestCollection.findOne(qurey)
+      console.log(result);
       res.send(result)
     })
+
 
     app.delete('/requestFood/:id', async (req, res) => {
       const id = req.params.id;
